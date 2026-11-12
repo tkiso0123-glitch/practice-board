@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "practice-board",
+  "account_id": "ab3e4ce4739e3849416b38502018532d",
   "main": "src/index.js",
   "compatibility_date": "2026-10-01",
   // 画面（public/）はそのまま配信し、/api と /webhook だけWorkerが処理する
@@ -24,7 +25,7 @@
   "vars": {
     "LIFF_ID": "",
     "LOGIN_CHANNEL_ID": "",
-    "BOT_BASIC_ID": "",
+    "BOT_BASIC_ID": "@366dohie",
     "ADMIN_USER_IDS": "",
     "RETENTION_DAYS": "30"
   },
