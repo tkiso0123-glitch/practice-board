@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: #f6f4ef; --card: #fff; --ink: #2b2a27; --sub: #6d6a63; --line: #e4e0d6;
+    --accent: #2f7a5b; --accent-soft: #e3f1ea; --warn: #b4532a; --warn-soft: #f8e9e1;
+    --line-green: #06c755; --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    font-size: 15px; line-height: 1.6;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 20px 16px 60px; }
+  h1 { font-size: 20px; margin: 4px 0 2px; }
+  .lead { color: var(--sub); font-size: 13px; margin: 0 0 16px; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
+  label { display: block; font-size: 12px; color: var(--sub); margin: 10px 0 4px; }
+  label:first-child { margin-top: 0; }
+  input, select, textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+    font: inherit; background: #fff; color: var(--ink);
+  }
+  textarea { min-height: 70px; resize: vertical; }
+  .row { display: flex; gap: 10px; }
+  .row > div { flex: 1; min-width: 0; }
+  button, .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    border: 0; border-radius: 999px; padding: 9px 16px; font: inherit; font-weight: 600;
+    cursor: pointer; text-decoration: none; white-space: nowrap;
+  }
+  button:disabled { opacity: .5; cursor: default; }
+  .primary { background: var(--accent); color: #fff; }
+  .ghost { background: transparent; color: var(--sub); border: 1px solid var(--line); }
+  .danger { background: var(--warn-soft); color: var(--warn); }
+  .lineBtn { background: var(--line-green); color: #fff; }
+  .wide { width: 100%; padding: 12px; margin-top: 14px; }
+  .toolbar { display: flex; gap: 8px; align-items: center; margin: 4px 0 12px; }
+  .toolbar .spacer { flex: 1; }
+  .chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 8px; }
+  .chip {
+    border: 1px solid var(--line); background: #fff; color: var(--sub); border-radius: 999px;
+    padding: 5px 12px; font-size: 13px; font-weight: 500; flex: none;
+  }
+  .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .day { font-weight: 700; margin: 18px 4px 8px; font-size: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
+  .card.formed { border-color: #b9dccb; box-shadow: inset 4px 0 0 var(--accent); }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #efece5; color: var(--sub); }
+  .tag.ok { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  .tag.wait { background: #fff3d6; color: #8a6400; font-weight: 700; }
+  .title { font-weight: 700; font-size: 16px; }
+  .meta { color: var(--sub); font-size: 13px; }
+  .note { font-size: 13px; margin-top: 6px; white-space: pre-wrap; }
+  .members { font-size: 13px; margin-top: 8px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .actions button, .actions .btn { padding: 7px 14px; font-size: 13px; }
+  .empty { text-align: center; color: var(--sub); padding: 30px 10px; }
+  .hint { font-size: 12px; color: var(--sub); margin-top: 6px; }
+  .foot { font-size: 12px; color: var(--sub); margin-top: 28px; }
+  #toast {
+    position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+    background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s; max-width: 90%;
+  }
+  #toast.show { opacity: 1; }
+  #form { display: none; }
+  #form.open { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>練習・勉強会ボード</h1>
+  <p class="lead">「この日のこの時間に、誰かと◯◯したい！」を気軽に募集できます。人数がそろったらLINEにお知らせが届きます。</p>
+
+  <div class="box">
+    <label for="myName">あなたの名前（ニックネームでOK・この端末に保存されます）</label>
+    <input id="myName" maxlength="20" placeholder="例）きそ">
+    <div class="hint">Botに「登録 この名前」と送っておくと、成立のお知らせが個別に届くことがあります。</div>
+  </div>
+
+  <div class="toolbar">
+    <button class="primary" id="openForm">＋ 募集する</button>
+    <span class="spacer"></span>
+    <button class="ghost" id="reload">更新</button>
+  </div>
+
+  <div class="box" id="form">
+    <label for="fTheme">テーマ</label>
+    <select id="fTheme"></select>
+
+    <label for="fTitle">タイトル（任意・「その他」のときは必須）</label>
+    <input id="fTitle" maxlength="40" placeholder="例）逐語記録の振り返りもしたい">
+
+    <div class="row">
+      <div><label for="fDate">日付</label><input id="fDate" type="date"></div>
+    </div>
+    <div class="row">
+      <div><label for="fStart">開始</label><input id="fStart" type="time" step="900" value="19:00"></div>
+      <div><label for="fEnd">終了（任意）</label><input id="fEnd" type="time" step="900"></div>
+    </div>
+
+    <div class="row">
+      <div><label for="fStyle">形式</label><select id="fStyle"></select></div>
+      <div><label for="fPlace">場所（任意）</label><input id="fPlace" maxlength="60" placeholder="例）Zoom／茨木駅近く"></div>
+    </div>
+    <div class="hint">ZoomなどのURLは、成立してからLINEで共有するのがおすすめです。</div>
+
+    <div class="row">
+      <div><label for="fMin">成立人数（自分を含む）</label><input id="fMin" type="number" min="2" max="20" value="3"></div>
+      <div><label for="fCap">定員（任意）</label><input id="fCap" type="number" min="0" max="50" placeholder="なし"></div>
+    </div>
+
+    <label for="fNote">ひとこと（任意）</label>
+    <textarea id="fNote" maxlength="300" placeholder="例）カウンセラー役をやりたいです。クライエント役・観察役どなたか！"></textarea>
+    <div class="hint">相談内容や個人的な事情は書かないでください。</div>
+
+    <button class="primary wide" id="submit">この内容で募集する</button>
+  </div>
+
+  <div class="chips" id="chips"></div>
+  <div id="list"><div class="empty">読み込み中…</div></div>
+
+  <p class="foot">
+    ・参加の取り消しや中止は、操作したときと同じ端末・ブラウザから行えます。<br>
+    ・LINEグループで「一覧」と送ると、これからの予定をBotが返事します。<br>
+    ・名前はグループ内の呼び名だけにして、相談内容などは書かないようにしましょう。
+  </p>
+</div>
+<div id="toast"></div>
+
+<script>
+  // ---- 端末への保存（使えない環境でも動くように） ----
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  };
+  let tokens = store.get('pb_tokens', {});   // 参加した会: { eventId: token }
+  let hosts = store.get('pb_hosts', {});     // 募集した会: { eventId: token }
+  let themes = [], events = [], filter = 'すべて', today = '', busy = false;
+  const DEFAULT_MIN = { '面談練習（ロープレ）': 3 };
+
+  const $ = id => document.getElementById(id);
+
+  function call(fn, ...args) {
+    return new Promise((resolve, reject) => {
+      google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[fn](...args);
+    });
+  }
+  function errText(e) {
+    return String((e && e.message) || e).replace(/^(Error|Exception):\s*/, '');
+  }
+  let toastTimer;
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  }
+  function el(tag, attrs, ...children) {
+    const n = document.createElement(tag);
+    Object.entries(attrs || {}).forEach(([k, v]) => {
+      if (k === 'class') n.className = v;
+      else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+      else if (v !== false && v != null) n.setAttribute(k, v === true ? '' : v);
+    });
+    children.flat().forEach(c => { if (c != null && c !== false) n.append(c); });
+    return n;
+  }
+
+  // ---- 表示用 ----
+  const WD = '日月火水木金土';
+  function dayLabel(d) {
+    const dt = new Date(d + 'T00:00:00');
+    const s = (dt.getMonth() + 1) + '月' + dt.getDate() + '日(' + WD[dt.getDay()] + ')';
+    return d === today ? '今日 ' + s : s;
+  }
+  function timeText(e) { return e.start + '〜' + (e.end || ''); }
+  function labelText(e) { return e.title || e.theme; }
+  function myName() { return $('myName').value.trim(); }
+
+  function shareUrl(e) {
+    const rest = Math.max(0, e.minPeople - e.members.length);
+    const state = e.status === '成立' ? '成立しています（参加まだ間に合います）' : 'あと' + rest + '名で成立';
+    const text = '📣【' + e.theme + '】' + (e.title || '') + '\n' + dayLabel(e.date) + ' ' + timeText(e) +
+      '／' + e.style + '\n' + state + '\n参加はこちら👇\n' + PAGE_URL;
+    return 'https://line.me/R/share?text=' + encodeURIComponent(text);
+  }
+
+  function renderChips() {
+    const box = $('chips'); box.textContent = '';
+    ['すべて'].concat(themes).forEach(t => {
+      box.append(el('button', { class: 'chip' + (filter === t ? ' on' : ''), onclick: () => { filter = t; render(); } }, t));
+    });
+  }
+
+  function render() {
+    renderChips();
+    const list = $('list'); list.textContent = '';
+    const shown = events.filter(e => filter === 'すべて' || e.theme === filter);
+    if (!shown.length) {
+      list.append(el('div', { class: 'empty' }, 'いまは募集がありません。', el('br'), '「＋ 募集する」から気軽にどうぞ。'));
+      return;
+    }
+    let lastDay = '';
+    shown.forEach(e => {
+      if (e.date !== lastDay) { list.append(el('div', { class: 'day' }, dayLabel(e.date))); lastDay = e.date; }
+      list.append(card(e));
+    });
+  }
+
+  function card(e) {
+    const formed = e.status === '成立';
+    const rest = Math.max(0, e.minPeople - e.members.length);
+    const full = !!(e.capacity && e.members.length >= e.capacity);
+    const joined = !!tokens[e.id];
+    const isHost = !!hosts[e.id];
+
+    const actions = el('div', { class: 'actions' });
+    if (!joined) {
+      actions.append(el('button', { class: 'primary', disabled: full || busy, onclick: () => join(e) }, full ? '満員です' : '✋ 参加する'));
+    } else if (!isHost) {
+      actions.append(el('button', { class: 'ghost', disabled: busy, onclick: ev => confirmThen(ev.currentTarget, '本当に取り消す？', () => leave(e)) }, '参加を取り消す'));
+    }
+    actions.append(el('a', { class: 'btn lineBtn', href: shareUrl(e), target: '_blank', rel: 'noopener' }, 'LINEで知らせる'));
+    if (isHost) {
+      actions.append(el('button', { class: 'danger', disabled: busy, onclick: ev => confirmThen(ev.currentTarget, '本当に中止する？', () => cancel(e)) }, '中止する'));
+    }
+
+    return el('div', { class: 'card' + (formed ? ' formed' : '') },
+      el('div', { class: 'tags' },
+        el('span', { class: 'tag' }, e.theme),
+        el('span', { class: 'tag ' + (formed ? 'ok' : 'wait') }, formed ? '成立！' : 'あと' + rest + '名で成立'),
+        joined ? el('span', { class: 'tag' }, isHost ? 'あなたが募集' : '参加中') : null),
+      el('div', { class: 'title' }, labelText(e)),
+      el('div', { class: 'meta' }, timeText(e) + '／' + e.style + (e.place ? '（' + e.place + '）' : '')),
+      e.note ? el('div', { class: 'note' }, e.note) : null,
+      el('div', { class: 'members' },
+        '参加：' + e.members.join('、') + '（' + e.members.length + '名' + (e.capacity ? '／定員' + e.capacity + '名' : '') + '）'),
+      actions);
+  }
+
+  function confirmThen(btn, label, fn) {
+    if (btn.dataset.armed) { fn(); return; }
+    const orig = btn.textContent;
+    btn.dataset.armed = '1'; btn.textContent = label;
+    setTimeout(() => { if (btn.isConnected) { delete btn.dataset.armed; btn.textContent = orig; } }, 3000);
+  }
+
+  // ---- 操作 ----
+  function needName() {
+    const n = myName();
+    if (!n) { toast('先に、上の欄に名前を入れてください'); $('myName').focus(); return ''; }
+    store.set('pb_name', n);
+    return n;
+  }
+
+  async function run(fn) {
+    if (busy) return;
+    busy = true; render();
+    try { await fn(); } catch (err) { toast(errText(err)); }
+    finally { busy = false; render(); }
+  }
+
+  function join(e) {
+    const name = needName(); if (!name) return;
+    run(async () => {
+      const r = await call('joinEvent', e.id, name);
+      tokens[e.id] = r.token; store.set('pb_tokens', tokens);
+      events = r.events;
+      const now = events.find(x => x.id === e.id);
+      toast(now && now.status === '成立' ? '参加しました！成立です🙌' : '参加しました');
+    });
+  }
+
+  function leave(e) {
+    run(async () => {
+      const r = await call('leaveEvent', e.id, tokens[e.id]);
+      delete tokens[e.id]; store.set('pb_tokens', tokens);
+      events = r.events; toast('参加を取り消しました');
+    });
+  }
+
+  function cancel(e) {
+    run(async () => {
+      const r = await call('cancelEvent', e.id, hosts[e.id]);
+      delete hosts[e.id]; delete tokens[e.id];
+      store.set('pb_hosts', hosts); store.set('pb_tokens', tokens);
+      events = r.events; toast('中止にしました');
+    });
+  }
+
+  function submit() {
+    const name = needName(); if (!name) return;
+    const form = {
+      theme: $('fTheme').value, title: $('fTitle').value, date: $('fDate').value,
+      start: $('fStart').value, end: $('fEnd').value, style: $('fStyle').value,
+      place: $('fPlace').value, minPeople: $('fMin').value, capacity: $('fCap').value,
+      note: $('fNote').value, hostName: name,
+    };
+    $('submit').disabled = true;
+    run(async () => {
+      try {
+        const r = await call('createEvent', form);
+        hosts[r.id] = r.token; tokens[r.id] = r.token;
+        store.set('pb_hosts', hosts); store.set('pb_tokens', tokens);
+        events = r.events;
+        ['fTitle', 'fNote', 'fPlace', 'fCap', 'fEnd'].forEach(id => { $(id).value = ''; });
+        $('form').classList.remove('open'); $('openForm').textContent = '＋ 募集する';
+        filter = 'すべて';
+        toast('募集しました！「LINEで知らせる」でグループに伝えられます');
+      } finally { $('submit').disabled = false; }
+    });
+  }
+
+  async function reload(quiet) {
+    try { events = await call('listEvents'); render(); if (!quiet) toast('更新しました'); }
+    catch (err) { if (!quiet) toast(errText(err)); }
+  }
+
+  // ---- 初期化 ----
+  let PAGE_URL = '';
+  function setupForm(styles) {
+    $('fTheme').append(...themes.map(t => el('option', { value: t }, t)));
+    $('fStyle').append(...styles.map(s => el('option', { value: s }, s)));
+    $('fDate').min = today; $('fDate').value = today;
+    $('fTheme').addEventListener('change', () => { $('fMin').value = DEFAULT_MIN[$('fTheme').value] || 2; });
+    $('openForm').addEventListener('click', () => {
+      const open = $('form').classList.toggle('open');
+      $('openForm').textContent = open ? '閉じる' : '＋ 募集する';
+      if (open) $('fTheme').focus();
+    });
+    $('submit').addEventListener('click', submit);
+    $('reload').addEventListener('click', () => reload(false));
+    $('myName').addEventListener('change', () => store.set('pb_name', myName()));
+  }
+
+  $('myName').value = store.get('pb_name', '');
+  call('getInitialData').then(d => {
+    themes = d.themes; today = d.today; events = d.events; PAGE_URL = d.url;
+    setupForm(d.styles); render();
+  }).catch(err => {
+    $('list').textContent = '';
+    $('list').append(el('div', { class: 'empty' }, '読み込めませんでした：' + errText(err)));
+  });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && themes.length) reload(true); });
+</script>
+</body>
+</html>

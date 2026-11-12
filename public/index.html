@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>練習・勉強会ボード</title>
+<link rel="stylesheet" href="/style.css">
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>練習・勉強会ボード</h1>
+  <p class="lead">「この日のこの時間に、誰かと◯◯したい！」を気軽に募集できます。人数がそろったらLINEにお知らせが届きます。</p>
+
+  <div id="app" hidden>
+    <div class="toolbar">
+      <span class="me" id="me"></span>
+      <span class="spacer"></span>
+      <a class="adminLink" id="adminLink" href="/admin.html" hidden>管理</a>
+    </div>
+
+    <div class="notice" id="friendNotice" hidden>
+      Botを友だち追加しておくと、参加した会が成立したときなどに、個別にお知らせが届きます。
+      <a id="friendLink" href="#">友だち追加する</a>
+    </div>
+
+    <div class="notice" id="shareBar" hidden></div>
+
+    <div class="toolbar">
+      <button class="primary" id="openForm">＋ 募集する</button>
+      <span class="spacer"></span>
+      <button class="ghost" id="reload">更新</button>
+    </div>
+
+    <div class="box" id="form">
+      <label for="fTheme">テーマ</label>
+      <select id="fTheme"></select>
+
+      <label for="fTitle">タイトル（任意・「その他」のときは必須）</label>
+      <input id="fTitle" maxlength="40" placeholder="例）逐語記録の振り返りもしたい">
+
+      <label for="fDate">日付</label>
+      <input id="fDate" type="date">
+      <div class="row">
+        <div><label for="fStart">開始</label><input id="fStart" type="time" step="900" value="19:00"></div>
+        <div><label for="fEnd">終了（任意）</label><input id="fEnd" type="time" step="900"></div>
+      </div>
+
+      <div class="row">
+        <div><label for="fStyle">形式</label><select id="fStyle"></select></div>
+        <div><label for="fPlace">場所（任意）</label><input id="fPlace" maxlength="60" placeholder="例）Zoom／茨木駅近く"></div>
+      </div>
+      <div class="hint">ZoomなどのURLは、成立してからLINEで共有するのがおすすめです。</div>
+
+      <div class="row">
+        <div><label for="fMin">成立人数（自分を含む）</label><input id="fMin" type="number" min="2" max="20" value="3"></div>
+        <div><label for="fCap">定員（任意）</label><input id="fCap" type="number" min="0" max="50" placeholder="なし"></div>
+      </div>
+
+      <label for="fNote">ひとこと（任意）</label>
+      <textarea id="fNote" maxlength="300" placeholder="例）カウンセラー役をやりたいです。クライエント役・観察役どなたか！"></textarea>
+      <div class="hint">相談内容や個人的な事情は書かないでください。</div>
+
+      <button class="primary wide" id="submit">この内容で募集する</button>
+    </div>
+
+    <div class="chips" id="chips"></div>
+    <div id="list"></div>
+
+    <p class="foot">
+      ・名前はLINEの表示名で表示されます。<br>
+      ・LINEグループで「一覧」と送ると、これからの予定をBotが返事します。<br>
+      ・相談内容など、個人的なことは書かないようにしましょう。
+    </p>
+  </div>
+
+  <div class="center" id="loading">読み込み中…</div>
+</div>
+<div id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

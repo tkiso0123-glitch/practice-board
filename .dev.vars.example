@@ -1,0 +1,7 @@
+# 開発用（本番では使わない）
+DEV_AUTH=1
+SESSION_SECRET=dev-secret-change-me
+ADMIN_USER_IDS=dev-admin
+LINE_CHANNEL_SECRET=dev-channel-secret
+DEV_QUOTA=200
+DEV_GROUP_SIZE=20

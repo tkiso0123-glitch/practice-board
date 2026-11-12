@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>管理｜練習・勉強会ボード</title>
+<link rel="stylesheet" href="/style.css">
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>管理</h1>
+  <p class="lead"><a href="/" id="back">← ボードに戻る</a></p>
+  <div id="app" hidden>
+    <div class="box" id="status"></div>
+    <h2 class="day">設定</h2>
+    <div class="box" id="settings"></div>
+    <h2 class="day">これからの会（非表示・中止も含む）</h2>
+    <div id="events"></div>
+  </div>
+  <div class="center" id="loading">読み込み中…</div>
+</div>
+<div id="toast"></div>
+<script type="module" src="/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "practice-board",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  // 画面（public/）はそのまま配信し、/api と /webhook だけWorkerが処理する
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/webhook"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "practice-board",
+      // `npx wrangler d1 create practice-board` で表示されたIDに置き換える
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // 毎日 8:00（日本時間）＝ 23:00（UTC）：当日のリマインドと古いデータの削除
+  "triggers": { "crons": ["0 23 * * *"] },
+  // 秘密でない設定。秘密情報（トークン等）は `wrangler secret put` で登録する
+  "vars": {
+    "LIFF_ID": "",
+    "LOGIN_CHANNEL_ID": "",
+    "BOT_BASIC_ID": "",
+    "ADMIN_USER_IDS": "",
+    "RETENTION_DAYS": "30"
+  },
+  "observability": { "enabled": true }
+}

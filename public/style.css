@@ -1,0 +1,76 @@
+:root {
+  --bg: #f6f4ef; --card: #fff; --ink: #2b2a27; --sub: #6d6a63; --line: #e4e0d6;
+  --accent: #2f7a5b; --accent-soft: #e3f1ea; --warn: #b4532a; --warn-soft: #f8e9e1;
+  --line-green: #06c755; --radius: 14px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 640px; margin: 0 auto; padding: 20px 16px 60px; }
+h1 { font-size: 20px; margin: 4px 0 2px; }
+.lead { color: var(--sub); font-size: 13px; margin: 0 0 16px; }
+.box { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
+label { display: block; font-size: 12px; color: var(--sub); margin: 10px 0 4px; }
+label:first-child { margin-top: 0; }
+input, select, textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+  font: inherit; background: #fff; color: var(--ink);
+}
+textarea { min-height: 70px; resize: vertical; }
+.row { display: flex; gap: 10px; }
+.row > div { flex: 1; min-width: 0; }
+button, .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 0; border-radius: 999px; padding: 9px 16px; font: inherit; font-weight: 600;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+}
+button:disabled { opacity: .5; cursor: default; }
+.primary { background: var(--accent); color: #fff; }
+.ghost { background: transparent; color: var(--sub); border: 1px solid var(--line); }
+.danger { background: var(--warn-soft); color: var(--warn); }
+.lineBtn { background: var(--line-green); color: #fff; }
+.wide { width: 100%; padding: 12px; margin-top: 14px; }
+.toolbar { display: flex; gap: 8px; align-items: center; margin: 4px 0 12px; }
+.toolbar .spacer { flex: 1; }
+.chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 8px; }
+.chip {
+  border: 1px solid var(--line); background: #fff; color: var(--sub); border-radius: 999px;
+  padding: 5px 12px; font-size: 13px; font-weight: 500; flex: none;
+}
+.chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.day { font-weight: 700; margin: 18px 4px 8px; font-size: 14px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
+.card.formed { border-color: #b9dccb; box-shadow: inset 4px 0 0 var(--accent); }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #efece5; color: var(--sub); }
+.tag.ok { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.tag.wait { background: #fff3d6; color: #8a6400; font-weight: 700; }
+.title { font-weight: 700; font-size: 16px; }
+.meta { color: var(--sub); font-size: 13px; }
+.note { font-size: 13px; margin-top: 6px; white-space: pre-wrap; }
+.members { font-size: 13px; margin-top: 8px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.actions button, .actions .btn { padding: 7px 14px; font-size: 13px; }
+.empty { text-align: center; color: var(--sub); padding: 30px 10px; }
+.hint { font-size: 12px; color: var(--sub); margin-top: 6px; }
+.foot { font-size: 12px; color: var(--sub); margin-top: 28px; }
+#toast {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+  background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px;
+  font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s; max-width: 90%;
+}
+#toast.show { opacity: 1; }
+#form { display: none; }
+#form.open { display: block; }
+.notice { background: var(--accent-soft); border: 1px solid #b9dccb; border-radius: var(--radius); padding: 12px 14px; font-size: 13px; margin-bottom: 14px; }
+.notice a { color: var(--accent); font-weight: 700; }
+.center { text-align: center; color: var(--sub); padding: 60px 16px; }
+.me { font-size: 13px; color: var(--sub); }
+.adminLink { font-size: 12px; color: var(--sub); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+td, th { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.small { font-size: 12px; color: var(--sub); }
+.tag.off { background: #eee; color: #888; }

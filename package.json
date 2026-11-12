@@ -1,0 +1,15 @@
+{
+  "name": "practice-board",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "db:migrate:local": "wrangler d1 migrations apply practice-board --local",
+    "db:migrate:remote": "wrangler d1 migrations apply practice-board --remote",
+    "deploy": "wrangler deploy",
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0"
+  }
+}
