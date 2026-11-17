@@ -19,7 +19,6 @@
 - LINEの料金と通数の数え方、Cloudflare Workers／D1の無料枠（最新の値）
 
 ## 未決・依頼事項
-- 【木曽さん】LINEグループにBotを招待することについて、グループの了解をとる
 - 【木曽さん】LINE Developers の「チャネル基本設定」で **Channel secret を再発行**する（11/12にスクリーンショットで共有されたため）。新しい値はチャットに貼らない
 
 ## 進捗
@@ -29,6 +28,7 @@
 - [x] Cloudflareアカウント作成済み（アカウントIDは wrangler.jsonc の account_id に設定済み）
 - [x] LINE公式アカウント作成済み：名前「キャリコン試験対策Bot」、ベーシックID `@366dohie`（wrangler.jsonc に設定済み）、チャットはオフ、Messaging API 有効（Messaging APIのChannel ID：2012582219）
 - [x] クラウド環境「practice-board」を作成：api.cloudflare.com への接続を許可
+- [x] LINEグループにBotを招待することについて、グループの了解を得た（2026-11-17 木曽さんより）
 
 ## 次にやること（本番セットアップの続き）
 1. 【木曽さん】Cloudflare APIトークンを作る：https://dash.cloudflare.com/profile/api-tokens → Create Token → テンプレート「Edit Cloudflare Workers」＋ Permissions に Account／D1／Edit を追加 → 作成
@@ -37,6 +37,6 @@
 4. 【木曽さん】Cloudflareの画面（Workers → practice-board → Settings → Variables and Secrets）で秘密情報を登録：LINE_CHANNEL_TOKEN（長期トークン）、LINE_CHANNEL_SECRET（再発行後の値）、SESSION_SECRET（ランダムな長い文字列）
 5. 【木曽さん】LINE Developers の Webhook URL に `https://（公開URL）/webhook` を入れて保存・検証、「Webhookの利用」をオン
 6. 【木曽さん＋Claude】LINEログインチャネル（同じプロバイダー）とLIFFを作成 → LIFF_ID・LOGIN_CHANNEL_ID・ADMIN_USER_IDS を wrangler.jsonc に反映して再公開（README「本番のセットアップ」2）
-7. Botをグループに招待（グループの了解をとってから）→ 木曽さんと少人数でテスト → 全体に公開
+7. Botをグループに招待（グループの了解は取得済み）→ 木曽さんと少人数でテスト → 全体に公開
 
 - [ ] 本番セットアップ（README「本番のセットアップ」）→ 木曽さんと少人数でテスト → 全体に公開
